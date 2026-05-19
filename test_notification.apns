@@ -1,0 +1,14 @@
+{
+  "Simulator Target Bundle": "com.nursesprep.app",
+  "aps": {
+    "alert": {
+      "title": "Payment Successful",
+      "body": "Your subscription has been activated!"
+    },
+    "sound": "default",
+    "badge": 1
+  },
+  "data": {
+    "type": "payment_success"
+  }
+}

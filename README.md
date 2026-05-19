@@ -249,7 +249,7 @@ Upload the `.aab` file to Google Play Console.
 ## Developer
 
 Fully designed and developed by **MD Ali Nuhan Chowdhury**
-- Email: baibur1216@gmail.com
+- Email: nuhanchowdhurylinkdin@gmail.com
 - Website: [www.nursesprep.com](https://www.nursesprep.com)
 - GitHub: [github.com/nuhanchowdhurylinkdin-a11y](https://github.com/nuhanchowdhurylinkdin-a11y)
 - LinkedIn: [linkedin.com/in/nuhanchowdhury](http://www.linkedin.com/in/nuhanchowdhury)

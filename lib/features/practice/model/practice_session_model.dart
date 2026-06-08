@@ -150,9 +150,15 @@ class SessionQuestion {
       questionNumber: json['question_number'] ?? 0,
       questionPrompt: json['question_prompt'] ?? '',
       questionType: json['question_type'] ?? 'single_choice',
-      category: FilterItem.fromJson(json['category']),
-      topic: FilterItem.fromJson(json['topic']),
-      difficulty: FilterItem.fromJson(json['difficulty']),
+      category: json['category'] != null
+          ? FilterItem.fromJson(json['category'])
+          : FilterItem(id: '', name: ''),
+      topic: json['topic'] != null
+          ? FilterItem.fromJson(json['topic'])
+          : FilterItem(id: '', name: ''),
+      difficulty: json['difficulty'] != null
+          ? FilterItem.fromJson(json['difficulty'])
+          : FilterItem(id: '', name: ''),
       options: (json['options'] as List)
           .map((o) => QuestionOption.fromJson(o))
           .toList(),

@@ -25,7 +25,6 @@ migrate_working_dir/
 .claude/
 
 # Environment
-.env
 
 # Firebase config files (sensitive — do not commit to public repos)
 google-services.json
@@ -56,3 +55,5 @@ branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
 .gitignore
+config.bat
+node_modules

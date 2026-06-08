@@ -87,7 +87,13 @@ class QuizController extends GetxController {
       final response = await _networkCaller.getRequest(url);
 
       if (response.isSuccess) {
-        final data = Map<String, dynamic>.from(response.responseData['data']);
+        final rawData = response.responseData['data'];
+        if (rawData == null) {
+          AppHelperFunctions.showErrorSnackBar('Failed to resume session');
+          Get.back();
+          return;
+        }
+        final data = Map<String, dynamic>.from(rawData);
         session.value = await compute(_parseSession, data);
 
         isExamMode.value = session.value?.mode == 'exam';
@@ -112,7 +118,10 @@ class QuizController extends GetxController {
         if (isExamMode.value && session.value?.timeLimitMinutes != null) {
           final elapsed = session.value?.timeTakenSeconds ?? 0;
           final totalSeconds = session.value!.timeLimitMinutes! * 60;
-          remainingSeconds.value = (totalSeconds - elapsed).clamp(0, totalSeconds);
+          remainingSeconds.value = (totalSeconds - elapsed).clamp(
+            0,
+            totalSeconds,
+          );
           _startTimer();
         }
       } else {
@@ -233,7 +242,13 @@ class QuizController extends GetxController {
       );
 
       if (response.isSuccess) {
-        final data = Map<String, dynamic>.from(response.responseData['data']);
+        final rawData = response.responseData['data'];
+        if (rawData == null) {
+          AppHelperFunctions.showErrorSnackBar('Failed to start session');
+          Get.back();
+          return;
+        }
+        final data = Map<String, dynamic>.from(rawData);
         session.value = await compute(_parseSession, data);
       } else {
         AppHelperFunctions.showErrorSnackBar(
@@ -265,14 +280,13 @@ class QuizController extends GetxController {
       isLoadingExams.value = true;
       exams.clear();
 
-      final queryParams = <String, String>{
-        'licenseType': licenseType,
-      };
+      final queryParams = <String, String>{'licenseType': licenseType};
       if (categoryId != null) queryParams['category'] = categoryId;
       if (topicId != null) queryParams['topic'] = topicId;
 
-      final uri = Uri.parse(ApiConstants.examAll)
-          .replace(queryParameters: queryParams);
+      final uri = Uri.parse(
+        ApiConstants.examAll,
+      ).replace(queryParameters: queryParams);
 
       final response = await _networkCaller.getRequest(uri.toString());
 
@@ -317,8 +331,16 @@ class QuizController extends GetxController {
         },
       );
 
+      print("The response: ${response.responseData}");
+
       if (response.isSuccess) {
-        final data = Map<String, dynamic>.from(response.responseData['data']);
+        final rawData = response.responseData['data'];
+        if (rawData == null) {
+          AppHelperFunctions.showErrorSnackBar('Failed to start exam');
+          Get.back();
+          return;
+        }
+        final data = Map<String, dynamic>.from(rawData);
         session.value = await compute(_parseSession, data);
         remainingSeconds.value = exam.timeLimit * 60;
         _startTimer();
@@ -331,6 +353,7 @@ class QuizController extends GetxController {
         Get.back();
       }
     } catch (e) {
+      print("Error: $e");
       AppHelperFunctions.showErrorSnackBar('Failed to start exam');
       Get.back();
     } finally {
@@ -409,13 +432,19 @@ class QuizController extends GetxController {
       final response = await _networkCaller.postRequest(url, body: {});
 
       if (response.isSuccess) {
-        final data = Map<String, dynamic>.from(response.responseData['data']);
-        sessionResult.value = await compute(_parseResult, data);
+        final rawData = response.responseData['data'];
+        if (rawData != null) {
+          sessionResult.value = await compute(
+            _parseResult,
+            Map<String, dynamic>.from(rawData),
+          );
+        }
         Get.offNamed(AppRoute.getSessionResultScreen());
         return;
       } else {
         final error = response.errorMessage.toLowerCase();
-        if (error.contains('already submitted') || error.contains('already submit')) {
+        if (error.contains('already submitted') ||
+            error.contains('already submit')) {
           Get.offNamed(AppRoute.getSessionResultScreen());
           return;
         }
@@ -445,8 +474,9 @@ class QuizController extends GetxController {
     final url =
         '${ApiConstants.practiceSessions}/${s.id}/questions/${q.sessionQuestionId}';
 
-    await _networkCaller.patchRequest(url, body: {
-      'selected_answers': selected,
-    });
+    await _networkCaller.patchRequest(
+      url,
+      body: {'selected_answers': selected},
+    );
   }
 }

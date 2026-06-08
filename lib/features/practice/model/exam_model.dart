@@ -86,8 +86,8 @@ class ExamModel {
           category: FilterItem(id: category.id, name: category.categoryName),
           topic: FilterItem(id: topic.id, name: topic.topicName),
           difficulty: FilterItem(
-            id: q.difficulty.id,
-            name: q.difficulty.levelName,
+            id: q.difficulty?.id ?? '',
+            name: q.difficulty?.levelName ?? '',
           ),
           options: [
             QuestionOption(key: 'A', text: q.optionA),
@@ -140,7 +140,7 @@ class ExamTopic {
 class ExamQuestion {
   final String id;
   final String questionId;
-  final ExamDifficulty difficulty;
+  final ExamDifficulty? difficulty;
   final String questionText;
   final String questionType;
   final String optionA;
@@ -157,7 +157,7 @@ class ExamQuestion {
   ExamQuestion({
     required this.id,
     required this.questionId,
-    required this.difficulty,
+    this.difficulty,
     required this.questionText,
     required this.questionType,
     required this.optionA,
@@ -176,7 +176,9 @@ class ExamQuestion {
     return ExamQuestion(
       id: json['id'] ?? '',
       questionId: json['question_id'] ?? '',
-      difficulty: ExamDifficulty.fromJson(json['difficulty']),
+      difficulty: json['difficulty'] != null
+          ? ExamDifficulty.fromJson(json['difficulty'])
+          : null,
       questionText: json['question_text'] ?? '',
       questionType: json['question_type'] ?? 'single_choice',
       optionA: json['option_a'] ?? '',
